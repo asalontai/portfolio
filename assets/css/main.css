@@ -2662,3 +2662,8 @@ input, select, textarea {
 	.b4 {
 		background-color: #e8edec;
 	}
+
+	.col {
+		display: flex;
+		flex-direction: column;
+	}
