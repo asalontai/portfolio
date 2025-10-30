@@ -299,6 +299,7 @@
 									<div class="col-12">
 										<textarea name="message" placeholder="Message" required></textarea>
 									</div>
+									<input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off"/>
 									<div class="col-12">
 										<input type="submit" value="Send Message" />
 									</div>
@@ -338,10 +339,27 @@
 			</script>
 
 			<script>
-				document
-				.getElementById("contact-form")
-				.addEventListener("submit", function (event) {
+				let canSubmit = true; 
+
+				document.getElementById("contact-form").addEventListener("submit", function(event) {
 					event.preventDefault();
+
+					if (!canSubmit) {
+					alert("Please wait a few seconds before sending again.");
+					return;
+					}
+					canSubmit = false;
+
+					setTimeout(() => {
+					canSubmit = true;
+					}, 10000);
+
+					const honeypot = this.querySelector('input[name="website"]').value;
+					if (honeypot) {
+					console.log("Spam detected, blocking submission.");
+					alert("Spam detected, message not sent.");
+					return;
+					}
 
 					const serviceID = "service_4rfasg6";
 					const templateID = "template_p3qnpob";
@@ -349,15 +367,17 @@
 					emailjs.sendForm(serviceID, templateID, this).then(
 					(response) => {
 						console.log("SUCCESS!", response.status, response.text);
-						alert("SUCCESS!");
+						alert("Message sent successfully!");
+						this.reset(); 
 					},
 					(error) => {
 						console.log("FAILED...", error);
-						alert("FAILED...", error);
+						alert("Failed to send message: " + error.text);
 					}
 					);
 				});
 			</script>
+
 
 
 	</body>
